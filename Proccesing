@@ -1,0 +1,32 @@
+import processing.serial.*; //přidání knihovny pro práci se seriovým portem
+Serial myPort; 
+float x,y;
+
+void setup() { 
+  size(500,700); //nastavení velikosti okna grafu
+  
+  myPort = new Serial(this, "COM2", 9600); //inicializace seriového portu
+  myPort.bufferUntil('\n'); 
+} 
+
+void draw() { 
+  background(0); //nastavení černého pozadí
+  ellipse(x,y,10,10); //zaznamenávání polohy dronu do grafu (souřadnice x, sořadnice y, šířka bodu, výška bodu)
+} 
+
+void serialEvent(Serial p) { 
+  String rawString = p.readString(); //čtení Stringu ze seriového portu
+  rawString = rawString.trim(); //odstranění zbytečných mezer
+  try{
+    String[] values = rawString.split(","); //rozdělení stringu na 2 hodnoty
+    
+    float serialX = float(values[0]); //převedení prvního Stringu na float
+    float serialY = float(values[1]); //převedení druhého Stringu na float
+    
+    x = map(serialX,0,255,0,width); //převedení souřadnice x na byteovou hodnotu
+    y = map(serialY,0,255,0,height); //převedení souřadnice y na byteovou hodnotu
+  }catch(Exception e){
+    println("Error parsing string from Serial:"); //vypis chybove zprávy při špatně zadaných souřadnicích v arduinu
+    e.printStackTrace();
+  }
+}
