@@ -1,0 +1,34 @@
+float xa = 0; //souřadnice x ANCHORu A
+ float ya = 0; //souřadnice y ANCHORu A
+ float xb = 5; //souřadnice x ANCHORu B
+ float yb = 0; //souřadnice y ANCHORu B
+ float xc = 5; //souřadnice x ANCHORu C
+ float yc = 7; //souřadnice y ANCHORu C
+ 
+ float ra = 5.8; //předem vypočítaná vzdálenost mezi TAGem a ACHORem A
+ float rb = 5.4; //předem vypočítaná vzdálenost mezi TAGem a ACHORem B
+ float rc = 2.8; //předem vypočítaná vzdálenost mezi TAGem a ACHORem C
+
+
+float x,y;
+
+float a = 255; 
+float b = 500; //stejná velikost okna grafu jako v programu Proccesing 
+float c = 700; //stejná velikost okna grafu jako v programu Proccesing
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  float S = (pow(xc, 2.) - pow(xb, 2.) + pow(yc, 2.) - pow(yb, 2.) + pow(rb, 2.) - pow(rc, 2.)) / 2.0; //trilaterační výpočet
+  float T = (pow(xa, 2.) - pow(xb, 2.) + pow(ya, 2.) - pow(yb, 2.) + pow(rb, 2.) - pow(ra, 2.)) / 2.0; //trilaterační výpočet
+  float y = ((T * (xb - xc)) - (S * (xb - xa))) / (((ya - yb) * (xb - xc)) - ((yc - yb) * (xb - xa))); //trilaterační výpočet
+  float x = ((y * (ya - yb)) - T) / (xb - xa); //trilaterační výpočet
+  x=a/b*x*100; //převedení souřadnice x na velikost grafu
+  y=a/c*y*100; //převedení souřadnice y na velikost grafu
+  y = 255 -y; //program proccesing má jako výchozí bod[0;0] levý horní roh, ale my počítáme s levým spodním
+  Serial.print(x);      //výpis na seriový port
+  Serial.print(",");    //výpis na seriový port
+  Serial.print(y);      //výpis na seriový port
+  Serial.print("\n");   //výpis na seriový port
+}
